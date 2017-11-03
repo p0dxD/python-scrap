@@ -1,19 +1,40 @@
-import re
 import sys
-
+from tkinter import *
+from bs4 import BeautifulSoup
 import urllib.request as ur
-s = ur.urlopen("https://www.instagram.com/dnialvz/")
-# s = ur.urlopen("https://www.instagram.com/explore/tags/"+sys.argv[1]+"/?hl=en")
-size = 0 
-for line in s.readlines():
-	if re.match(b'.*src=\".*?\".*', line) is not None:
-		for img in re.findall(b'src=\"https://.*?\"',line):
-			f = open('/Users/joserodriguez/Desktop/test/'+str(size)+'.jpg', 'wb')
-			f.write(ur.urlopen(img.decode("utf-8")[5:-1]).read())
+import re
+
+def images(soup):
+	size = 0 
+	for img in soup.find_all('img'):	
+		if img.get('src').startswith('http'):
+			f = open('/Users/joserodriguez/Documents/python/test/'+str(size)+'.jpg', 'wb')
+			f.write(ur.urlopen(img.get('src')).read())
 			f.close()
 			size += 1
-from bs4 import BeautifulSoup
-page = ur.urlopen('http://yahoo.com').read()
-soup = BeautifulSoup(page, 'html.parser')
-# print("PAGE:",soup.prettify())
-print("PAGE:",soup.find('img'))
+
+
+#GUI
+def get_images():
+    global e
+    url = e.get()
+    #parse
+    page = ur.urlopen(url).read()
+    soup = BeautifulSoup(page, 'html.parser')
+    images(soup)
+
+def main():
+	global e
+	#GUI
+	root = Tk()
+	root.title('Name')
+	e = Entry(root)
+	e.delete(0, END)
+	e.insert(0, "https://www.instagram.com/(username)")
+	e.pack()
+	e.focus_set()
+	b = Button(root,text='Get images',command=get_images)
+	b.pack(side='bottom')
+	root.mainloop()
+
+main()
