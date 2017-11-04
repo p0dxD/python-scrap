@@ -3,6 +3,22 @@ from tkinter import *
 from bs4 import BeautifulSoup
 import urllib.request as ur
 import re
+import mechanicalsoup
+from selenium import webdriver
+from selenium.webdriver.common.keys import Keys
+
+def click_item():
+	print("in here")
+	driver = webdriver.Firefox()
+	driver.get("https://www.python.org")
+	assert "Python" in driver.title
+	elem = driver.find_element_by_class("a")
+	elem.clear()
+	# elem.send_keys("pycon")
+	# elem.send_keys(Keys.RETURN)
+	assert "No results found." not in driver.page_source
+	# driver.close()
+	print("done")
 
 def images(soup):
 	size = 0 
@@ -22,6 +38,7 @@ def get_images():
     page = ur.urlopen(url).read()
     soup = BeautifulSoup(page, 'html.parser')
     images(soup)
+    click_item()
 
 def main():
 	global e
