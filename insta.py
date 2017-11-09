@@ -1,16 +1,23 @@
+
+# scrapy
 import sys
 from tkinter import *
 from bs4 import BeautifulSoup
 import urllib.request as ur
 import re
+import random
 import mechanicalsoup
 from selenium import webdriver
 from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
+account = "THEIRACCOUNT"
+password = "PASSWORD"
+youraccount = "YOURACCOUNT"
+imagepath = '/Users/joserodriguez/Documents/python/test/'
 
-
+words = ["wow", "very nice!", "😲", "f4f?", "xd", "XD","😀","😳"]
 class Error(Exception):
     '''Base class for exceptions in this module.'''
     pass
@@ -39,40 +46,48 @@ def fill_item():
 	elem = driver.find_element_by_class_name('_b93kq').click()
 	elem = driver.find_element_by_name("username")
 	elem.clear()
-	elem.send_keys("YOURUSERNAME")
+	elem.send_keys(youraccount)
 	elem = driver.find_element_by_name("password")
 	elem.clear()
-	elem.send_keys("PASSWORD")
+	elem.send_keys(password)
 	elem.send_keys(Keys.RETURN)
 
 	myElem = my_element(delay+10, By.CLASS_NAME, '_avvq0')
 	elem = driver.find_element_by_class_name('_avvq0')
 	elem.clear()
-	elem.send_keys("ACCOUNT")
+	elem.send_keys(account)
 	elem.click()
 
 	myElem = my_element(delay+10, By.CLASS_NAME, '_gimca')
 	elem = driver.find_element_by_class_name('_gimca').click()
-	print(driver.current_url)
 
-	soup = get_page_elements(driver.current_url)
+	test = driver.page_source
+	soup = get_page_elemts_from_source(test)
+
+	like = False
+	comment = False
 
 	for a in soup.find_all('a', href=True):
 		if a.get('href').startswith('/p/'):
 			print("Test: ",a.get('href'))
 			driver.get("https://www.instagram.com"+a.get('href'))
-			myElem = my_element(delay+10, By.CLASS_NAME, '_eszkz')
-			elem = driver.find_element_by_class_name('_eszkz').click()
-
-
-	# elem.send_keys(Keys.RETURN)
+			if(like):
+				myElem = my_element(delay+10, By.CLASS_NAME, '_eszkz')
+				elem = driver.find_element_by_class_name('_eszkz').click()
+			elif(comment):
+				#_bilrf
+				myElem = my_element(delay+10, By.CLASS_NAME, '_p6oxf')
+				elem = driver.find_element_by_class_name('_p6oxf').click()
+				elem = driver.find_element_by_class_name('_bilrf')
+				elem.send_keys(words[random.randint(0,len(words)-1)])
+				elem.send_keys(Keys.RETURN)
 
 
 def images(soup):
 	size = 0 
 	for img in soup.find_all('img'):	
 		if img.get('src').startswith('http'):
-			f = open('/Users/joserodriguez/Documents/python/test/'+str(size)+'.jpg', 'wb')
+			f = open(imagepath+str(size)+'.jpg', 'wb')
 			f.write(ur.urlopen(img.get('src')).read())
 			f.close()
 			size += 1
@@ -84,6 +99,11 @@ def get_page_elements(url):
 	print("returning")
 	return soup
 
+def get_page_elemts_from_source(source):
+	soup = BeautifulSoup(source, 'html.parser')
+	print("returning")
+	return soup
+
 #GUI
 def get_images():
     global e
@@ -92,9 +112,6 @@ def get_images():
     page = ur.urlopen(url).read()
     soup = BeautifulSoup(page, 'html.parser')
     # images(soup)
-    #testing
-    # load_page('https://www.instagram.com/')
-    # click_item(driver)
     fill_item()
 
 def main():
