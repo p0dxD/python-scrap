@@ -12,9 +12,9 @@ from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
-account = "THEIRACCOUNT"
-password = "PASSWORD"
-youraccount = "YOURACCOUNT"
+account = "nisreen_soudi96"
+password = "podoiC09395-"
+youraccount = "p0dxd2"
 imagepath = '/Users/joserodriguez/Documents/python/test/'
 
 words = ["wow", "very nice!", "😲", "f4f?", "xd", "XD","😀","😳"]
@@ -41,9 +41,9 @@ def fill_item():
 	driver = webdriver.Firefox()
 	driver.get("https://www.instagram.com/")
 	delay = 20 # seconds
-	myElem = my_element(delay,By.CLASS_NAME, '_b93kq')
+	myElem = my_element(delay,By.CLASS_NAME, '_msxj2')
 
-	elem = driver.find_element_by_class_name('_b93kq').click()
+	elem = driver.find_element_by_class_name('_msxj2').click()
 	elem = driver.find_element_by_name("username")
 	elem.clear()
 	elem.send_keys(youraccount)
@@ -64,7 +64,7 @@ def fill_item():
 	test = driver.page_source
 	soup = get_page_elemts_from_source(test)
 
-	like = False
+	like = True
 	comment = False
 
 	for a in soup.find_all('a', href=True):
@@ -93,15 +93,12 @@ def images(soup):
 			size += 1
 
 def get_page_elements(url):
-	print("here")
 	page = ur.urlopen(url).read()
 	soup = BeautifulSoup(page, 'html.parser')
-	print("returning")
 	return soup
 
 def get_page_elemts_from_source(source):
 	soup = BeautifulSoup(source, 'html.parser')
-	print("returning")
 	return soup
 
 #GUI
